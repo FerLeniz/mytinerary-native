@@ -4,7 +4,7 @@ import { StyleSheet, Text, ImageBackground, Pressable } from "react-native"
 const CardCity = (props) => {
   const { name, image,_id } = props.city
   return (
-    <Pressable onPress={() => props.navigation.navigate("City", { id: _id })}>
+    <Pressable onPress={() => props.navigation.navigate("Go City", { id: _id })}>
       <ImageBackground style={styles.imageCity} source={{ uri: image }}>
         <Text style={styles.textCity}>{name}</Text>
       </ImageBackground>

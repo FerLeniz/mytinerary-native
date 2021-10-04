@@ -6,12 +6,6 @@ import {
   CabinSketch_700Bold,
 } from "@expo-google-fonts/cabin-sketch"
 import {
-  AlegreyaSans_100Thin,
-  AlegreyaSans_100Thin_Italic,
-  AlegreyaSans_300Light,
-  AlegreyaSans_300Light_Italic,
-  AlegreyaSans_400Regular,
-  AlegreyaSans_400Regular_Italic,
   AlegreyaSans_500Medium,
   AlegreyaSans_500Medium_Italic,
   AlegreyaSans_700Bold,
@@ -28,6 +22,7 @@ import thunk from "redux-thunk"
 import rootReducer from "./Redux/Reducer/rootReducer"
 import { NavigationContainer } from "@react-navigation/native"
 import Drawer from "./navigation/Drawer"
+import Toast from 'react-native-toast-message';
 
 const globalStore = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -38,6 +33,9 @@ export default function App() {
     CabinSketch_700Bold,
     AlegreyaSans_700Bold,
     AlegreyaSans_700Bold_Italic,
+    AlegreyaSans_800ExtraBold,
+    AlegreyaSans_500Medium_Italic,
+    AlegreyaSans_500Medium
   })
 
   if (!fontsLoaded) {
@@ -45,10 +43,11 @@ export default function App() {
   } else {
     return (
       <Provider store={globalStore}>
-        <NavigationContainer>
-          <ThemeProvider>
+        <NavigationContainer >
+          <ThemeProvider >
             <Drawer />
           </ThemeProvider>
+          <Toast ref={(ref) => Toast.setRef(ref)} />
         </NavigationContainer>
       </Provider>
     )

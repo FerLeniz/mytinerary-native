@@ -1,29 +1,33 @@
-import React,{useState,useEffect} from 'react'
-import {ScrollView, StyleSheet, Text, View,ImageBackground } from 'react-native'
+import React,{useState,useEffect,useRef } from 'react'
+import {ScrollView, StyleSheet, Text, View,ImageBackground,Image } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import { connect } from "react-redux"
 import citiesAction from '../Redux/Action/citiesAction'
 import CardCity from '../components/CardCity'
-
+import Footer from '../components/Footer'
+import { useScrollToTop } from '@react-navigation/native'
+import LottieView from 'lottie-react-native'
 
 const Cities = (props) => {
   
     const { getCities,filterCities,filteredCities,allCitiesArr} = props
     const [search, setSearch] = useState('')
+    const ref = useRef()
 
     useEffect(() => {
         getCities()
-         
     }, [])
 
     const updateSearch = (search) => {
         filterCities(search)
         setSearch(search)
-        // console.log(filteredCities)
       };
-
+      
+        useScrollToTop(ref)
+      
+      
     return (
-        <ScrollView>
+        <ScrollView ref={ref} >
             <ImageBackground style={styles.backImg} source={require('../assets/playa-cities.jpg')}>
             <Text style={styles.text} >Discover the world with us!</Text>
             <SearchBar
@@ -36,17 +40,24 @@ const Cities = (props) => {
             </ImageBackground>
              <View style={styles.citiesContainer}>
                 {allCitiesArr.length ===0?
-                <Text>LOADING.....</Text>:
+                <>
+                <LottieView source={require('../assets/72659-loader-vb.json')} autoPlay loop />
+                <Text style={styles.text}>Cities are coming...</Text>
+                <Image style={styles.img} source={require('../assets/clock.png')}/>
+                </>
+                :
                 filteredCities.length ===0?
-                <Text>there aren´t cities</Text>:
+                <>
+                <Text style={styles.text}>There aren´t cities, try another one...</Text>
+                <Image style={{width:'90%'}} source={require('../assets/lost1.jpg')}/>
+                </>:
                 filteredCities.map(city=> <CardCity navigation={props.navigation} city={city} key={city._id}/>)
                 } 
             </View> 
-
+            <Footer/>
         </ScrollView>
     )
 }
-//if(allCitiesArr.lengthh == 0)? loading... : filter fliteredCities
 
 const styles = StyleSheet.create({
     backImg: {
@@ -57,13 +68,16 @@ const styles = StyleSheet.create({
       },
       text:{
           fontFamily: "AlegreyaSans_700Bold_Italic",
-          fontSize: 30
+          fontSize: 25
       },
       citiesContainer:{
         alignItems: "center",
         justifyContent: "center",
         marginTop: 20,
       },
+      img:{
+        width:'100%'
+      }
 })
 
 const mapStateToProps = (state) => {
@@ -79,7 +93,3 @@ const mapStateToProps = (state) => {
   }
 
 export default connect(mapStateToProps,mapDispatchToProps)(Cities)
-
-{/* <ImageBackground style={styles.imageCity} source={{uri:'https://th.bing.com/th/id/OIP._1yJ5YZ_Ar9qb0KK4gVtMwHaEK?pid=ImgDet&rs=1'}} >
-                    <Text style={styles.textCity}>city Example</Text>
-                </ImageBackground> */}

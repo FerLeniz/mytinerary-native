@@ -3,13 +3,16 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
+  Image,
   ScrollView,
   ImageBackground,
 } from "react-native"
 import { connect } from "react-redux"
 import { Icon } from "react-native-elements"
 import ItineraryAction from "../Redux/Action/itineraryAction"
+import Itinerary from '../components/Itinerary'
+import Footer from '../components/Footer'
+import LottieView from 'lottie-react-native'
 
 const City = (props) => {
   const [foundCity, setFoundCity] = useState({
@@ -23,8 +26,12 @@ const City = (props) => {
       let searchCity = props.allCitiesArr.find(
         (ciudad) => ciudad._id === idCity
       )
-      console.log(searchCity)
       setFoundCity({ loading: false, city: searchCity })
+    }
+    props.getItineraries(idCity)
+
+    return () => {
+      props.getItineraries(idCity)
     }
   }, [])
 
@@ -32,9 +39,7 @@ const City = (props) => {
 
   if (loading) {
     return (
-      <View style={styles.containerLoading}>
-        <Text>LOADING...</Text>
-      </View>
+         <LottieView source={require('../assets/72659-loader-vb.json')} autoPlay loop />
     )
   }
 
@@ -63,16 +68,15 @@ const City = (props) => {
             name="globe-americas"
             type="font-awesome-5"
             color="#032e50"
-            onPress={() => navigation.openDrawer()}
             containerStyle={{ marginBottom: 10 }}
           />
           <Text>{city.country}</Text>
-        </View><View style={styles.columnText}>
+        </View>
+        <View style={styles.columnText}>
           <Icon
             name="money-bill-wave"
             type="font-awesome-5"
             color="#032e50"
-            onPress={() => navigation.openDrawer()}
             containerStyle={{ marginBottom: 10 }}
           />
           <Text>{city.currentMoney}</Text>
@@ -82,14 +86,24 @@ const City = (props) => {
             name="language"
             type="font-awesome-5"
             color="#032e50"
-            onPress={() => navigation.openDrawer()}
             containerStyle={{ marginBottom: 10 }}
           />
           <Text>{city.language}</Text>
         </View>
       </View>
-      <Text>ITINERARY</Text>
-      {/* VACIO? no hay itnerario!! : itero itinerario... */}
+      <View>
+         {props.itineraries.length === 0 || props.itineraries === 'There are not itineraries'  ? (
+          <>
+            <Text style={styles.textNotFound}> There aren´t itineraries.. yet</Text>
+            <Image style={{width: '95%'}} source={require('../assets/lost.png')}/>
+          </>
+        ) : (
+          props.itineraries.map((item) => (
+            <Itinerary key={item._id} itinerary={item} />
+          ))
+        )} 
+      </View>
+      <Footer/>
     </ScrollView>
   )
 }
@@ -104,11 +118,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 10,
-    
   },
-  columnText:{
+  columnText: {
     flexDirection: "column",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   backDrop: {
     backgroundColor: "#2f2f6ba0",
@@ -129,17 +142,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
   },
+  textNotFound:{
+    textAlign:'center',
+    fontSize:30,
+    fontFamily:'AlegreyaSans_700Bold',
+    marginVertical:15
+  }
 })
 
 const mapStateToProps = (state) => {
   return {
-    //que escuche al itinerario
+    itineraries: state.itineraries.itinerary,
     allCitiesArr: state.cities.allCitiesArr,
   }
 }
 
 const mapDispatchToProps = {
-  // cargar itinerario
+  getItineraries: ItineraryAction.getItineraries,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(City)

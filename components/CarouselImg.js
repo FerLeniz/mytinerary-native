@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View,ImageBackground  } from 'react-native'
-import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-snap-carousel'
 
 const CarouselImg = () => {
     const arrayCities = [

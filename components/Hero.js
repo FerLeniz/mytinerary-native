@@ -20,7 +20,7 @@ const Hero = (props) => {
           <Button
             title="Click Here!"
             buttonStyle={styles.heroButton}
-            onPress={() => { props.navigation.navigate('Cities') }}
+            onPress={() => { props.navigation.navigate("Go Cities") }}
           />
         </View>
       </View>
